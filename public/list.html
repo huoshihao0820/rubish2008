@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+     <table>
+         <thead>
+         <tr>
+             <td>id</td>
+             <td>name</td>
+             <td>操作</td>
+         </tr>
+         </thead>
+         <tbody>
+         <tr v-for="item in users">
+             <td>{{ item.name }}</td>
+             <td>{{ item.password }}</td>
+             <td>
+                 <a href="javascript:;" @click="upd(item.id)">修改</a>|
+                 <a href="javascript:;" @click="del(item.id)">删除</a>
+             </td>
+         </tr>
+         </tbody>
+     </table>
+    </div>
+</body>
+</html>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            users:[]
+        },
+        methods:{
+            del(id){
+
+                axios.get(`http://localhost:8081/userdel?u_id=${id}`).then(function (d) {
+                    alert(d.data.code_decoration)
+                    location="/list.html"
+                })
+                }
+        },
+        created(){
+            _this=this;
+            axios.get("http://localhost:8081/userlist").then(function (d) {
+                _this.users=d.data
+            })
+        }
+
+    })
+</script>

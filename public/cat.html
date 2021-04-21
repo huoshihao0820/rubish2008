@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-router.js"></script>
+    <script src="/js/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <table border="1">
+        <thead>
+        <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>number</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in users">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>
+                <input type="button" value="-" @click="min(item.id,item.number)">
+                {{ item.number }}
+                <input type="button" value="+" @click="max(item.id,item.number)">
+            </td>
+            <td>
+                <a href="javascript:;" @click="upd(item.id)">修改</a>|
+                <a href="javascript:;" @click="del(item.id)">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            users:[]
+        },
+        methods:{
+            del(id){
+                axios.get(`http://localhost:8081/catdel?id=${id}`).then(function (d) {
+                    alert(d.data.code_decoration)
+                    location="/cat.html"
+                })
+            },
+            min(id,num){
+                axios.get(`http://localhost:8081/catmin?id=${id}&num=${num}`).then(function (d) {
+                    alert(d.data.code_decoration)
+                    location="/cat.html"
+                })
+            },
+            max(id,num){
+                axios.get(`http://localhost:8081/catmax?id=${id}&num=${num}`).then(function (d) {
+                    alert(d.data.code_decoration)
+                    location="/cat.html"
+                })
+            }
+        },
+        created(){
+            _this=this;
+            axios.get("http://localhost:8081/catlist").then(function (d) {
+                _this.users=d.data
+            })
+        }
+
+    })
+</script>

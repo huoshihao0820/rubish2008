@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/vue.min.js"></script>
+    <script src="/js/vue-router.js"></script>
+    <script src="/js/axios.min.js"></script>
+</head>
+<body>
+<div id="app" style="width: 300px;height: 200px;background-color: green;margin: 0 auto; text-align: center;padding-top: 100px;line-height: 50px">
+    <form action="">
+        用户名：<input type="text" v-model="name"><br>
+        密码：&nbsp;&nbsp;&nbsp;<input type="password" v-model="password"><br>
+        <input type="button" @click="btn" value="登录">
+    </form>
+</div>
+</body>
+</html>
+<script>
+    new Vue({
+        el:'#app',
+        data:{
+            name:'',
+            password:''
+        },
+        methods:{
+
+            btn(){
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:8081/login',
+                    data: {
+                        name:this.name,
+                        password:this.password
+                    }
+                }).then(function (d) {
+                   if(d.data.code==200){
+                       alert(d.data.code_decoration)
+                       location.href="/list.html";
+                   }else{
+                       alert(d.data.code_decoration)
+                   }
+
+                });
+
+            }
+        }
+    })
+</script>

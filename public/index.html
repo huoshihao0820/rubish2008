@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/vue.js"></script>
+    <script src="/js/vue-router.js"></script>
+    <script src="/js/axios.min.js"></script>
+
+</head>
+<body>
+    <div id="app">
+
+            <router-view></router-view>
+    </div>
+</body>
+</html>
+<script>
+
+    //定义路由组件
+        //登陆路由
+    const login={
+        props:{
+            name:'',
+            password:''
+        },
+        template:`<div>
+         <form action="">
+                用户名：<input type="text" v-model="name"><br>
+                密码：<input type="password" v-model="password"><br>
+                <input type="button" @click="btn" value="登录">
+            </form>
+        </div>`,
+        methods:{
+        btn(){
+            var _this=this
+            axios({
+                method: 'post',
+                url: 'http://localhost:8081/login',
+                data: {
+                    name:_this.name,
+                    password:_this.password
+                }
+            }).then(function (d) {
+                if(d.data.code==200){
+                    alert(d.data.code_decoration)
+                    location.href="/#/list";
+                }else{
+                    alert(d.data.code_decoration)
+                }
+
+            });
+
+        }
+    }
+    }
+        //注册路由
+    const add={
+        props:{
+            name:'',
+            password:''
+        },
+        template:`<div>
+                <form action="">
+                <input type="text" v-model="name"><br>
+                <input type="text" v-model="password"><br>
+                <input type="button" @click="btn" value="添加">
+                </form>
+                </div>`,
+        methods:{
+        btn(){
+            _this=this
+            axios.get(`http://localhost:8081/useradd?name='${this.name}'&password='${this.password}'`).then(function (d) {
+                if(d.code==200){
+//
+                }else{
+
+                }
+                alert(d.data.msg)
+
+                location="/#/login"
+
+            })
+        }
+    }
+    }
+        //列表路由
+    const list={
+        props:{
+            users:[]
+        },
+        template:` <div>
+                      <table border="1">
+                         <thead>
+                         <tr>
+                             <td>id</td>
+                             <td>name</td>
+                             <td>操作</td>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         <tr v-for="item in users">
+                             <td>{{ item.name }}</td>
+                             <td>{{ item.password }}</td>
+                             <td>
+                                 <a href="javascript:;" @click="upd(item.id)">修改</a>|
+                                 <a href="javascript:;" @click="del(item.id)">删除</a>
+                             </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>`,
+        methods:{
+            del(id){
+                axios.get(`http://localhost:8081/userdel?u_id=${id}`).then(function (d) {
+                    alert(d.data.code_decoration)
+                    location="/#/list"
+                })
+            }
+        },
+        created(){
+            _this=this;
+            console.log(_this)
+            axios.get("http://localhost:8081/userlist").then(function (d) {
+                _this.users=d.data
+            })
+        }
+
+    }
+    //定义路由
+    const routes=[
+        {path:'/',redirect:'/login'},
+        { path:'/login',component:login},
+        { path:'/add',component:add},
+        { path:'/list',component:list},
+
+            ]
+    //创建router实例
+    const router=new VueRouter({
+        routes:routes
+    })
+
+    new Vue({
+        el:'#app',
+        router:router,
+
+
+
+    })
+</script>
